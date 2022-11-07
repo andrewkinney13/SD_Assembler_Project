@@ -15,6 +15,7 @@
 #include <iostream>
 #include <stdlib.h>
 #include <string>
+#include <sstream>
 #include <windows.h>
 #include <map>
 #include <vector>

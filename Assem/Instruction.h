@@ -1,6 +1,8 @@
 //
 // Class to parse and provide information about instructions.  Note: you will be adding more functionality.
 //
+#include "stdafx.h"
+#include "Errors.h"
 #pragma once
 
 // The elements of an instruction.
@@ -8,11 +10,13 @@ class Instruction {
 
 public:
 
-    Instruction( );
-    ~Instruction( ) ;
+    Instruction( ) { };
+
+    ~Instruction( ){ };
 
     // Codes to indicate the type of instruction we are processing.  Why is this inside the
     // class?  We should make this an enum class.  We will do this during a lecture.
+    // Whenever callling this, use In
     enum InstructionType {
         ST_MachineLanguage, 	// A machine language instruction.
         ST_AssemblerInstr,      // Assembler Language instruction.
@@ -20,7 +24,7 @@ public:
         ST_End                  // end instruction.
     };
     // Parse the Instruction.
-    InstructionType ParseInstruction(string a_line) { return ST_MachineLanguage; };
+    InstructionType ParseInstruction(string a_line);
 
     // Compute the location of the next instruction.
     int LocationNextInstruction(int a_loc);
@@ -32,8 +36,7 @@ public:
     };
     // To determine if a label is blank.
     inline bool isLabel( ) {
-
-        return ! m_Label.empty();
+        return !m_Label.empty();
     };
 
 
@@ -54,6 +57,10 @@ private:
 
     bool m_IsNumericOperand;// == true if the operand is numeric.
     int m_OperandValue;   // The value of the operand if it is numeric.
+
+    // Private functions
+    void RemoveComment(string &a_line);
+    bool ParseLine(const string& a_line, string& a_label, string& a_opcode, string& a_operand);
 
 };
 
