@@ -60,7 +60,12 @@ void Assembler::PassI( )
 // This will translate the code... oh boy!
 void Assembler::PassII()
 {
+    /*if (!empty)
+        Errors::RecordError("Too many arguements")
 
+
+        if (!m_Label.empty() && m_OpCode.empty())
+            Errors::RecordError("Quack");*/
 }
 
 // Displays symbols in symbol table
