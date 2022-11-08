@@ -61,6 +61,7 @@ private:
     // Private functions
     void RemoveComment(string &a_line);
     bool ParseLine(const string& a_line, string& a_label, string& a_opcode, string& a_operand);
+    string MatchCase(const string& a_opcode);
 
 };
 

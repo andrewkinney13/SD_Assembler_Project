@@ -35,7 +35,7 @@ void Assembler::PassI( )
         }
         // Parse the line and get the instruction type.
         Instruction::InstructionType st =  m_inst.ParseInstruction( line );
-
+b 
         // If this is an end statement, there is nothing left to do in pass I.
         // Pass II will determine if the end is the last statement and report an error if it isn't.
         if( st == Instruction::ST_End ) return;

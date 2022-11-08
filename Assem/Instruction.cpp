@@ -17,12 +17,7 @@ Instruction::InstructionType Instruction::ParseInstruction(string a_line)
     bool empty = ParseLine(a_line, m_Label, m_OpCode, m_Operand);    
 
     // create case insensitive copy of m_OpCode for comparison, all uppercase
-    char char_OpCode[6] = "";
-    for (int i = 0; i < m_OpCode.length(); i++)
-    {
-        char_OpCode[i] = toupper(m_OpCode[i]);
-    }
-    string cmp_OpCode = char_OpCode;
+    string cmp_OpCode = MatchCase(m_OpCode);
 
     // check if comment
     if (!empty ||    // too many arguements, just skip the line and report error in PassII()
@@ -95,5 +90,33 @@ int Instruction::LocationNextInstruction(int a_loc)
 { 
 	return 100; 
 }
+
+/*
+NAME
+
+    MatchCase - creates an all uppercase copy string of orginal passed-in string 
+
+SYNOPSIS
+
+    string MatchCase( const string& a_opcode);
+        a_opcode	-> Operation Code to make uppercase
+
+DESCRIPTION
+
+    This function returns a copy of opcode strings to make comparisions 
+    without altering the original user code
+*/
+
+string Instruction::MatchCase(const string& a_opcode)
+{
+    char charOpCode[6] = "";
+    for (int i = 0; i < a_opcode.length(); i++)
+    {
+        charOpCode[i] = toupper(a_opcode[i]);
+    }
+    string newOpCode = charOpCode;
+    return newOpCode;
+}
+
 
 
