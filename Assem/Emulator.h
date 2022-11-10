@@ -14,7 +14,7 @@ public:
          m_memory.resize(MEMSZ, 0);
     }
     // Records instructions and data into simulated memory.
-    bool insertMemory( int a_location, long long a_contents );
+    bool insertMemory( int a_location, int a_contents );
     
     // Runs the program recorded in memory.
     bool runProgram( );
@@ -22,6 +22,7 @@ public:
 private:
 
     vector<int> m_memory;  	// Memory for the VC407
+    int m_acc; // accumulator, holds data to operate on with whatever is in memory 
 };
 
 #endif

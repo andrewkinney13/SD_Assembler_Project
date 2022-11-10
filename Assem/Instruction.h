@@ -63,7 +63,6 @@ private:
     bool ParseLine(const string& a_line, string& a_label, string& a_opcode, string& a_operand);
     string MatchCase(const string& a_opcode);
     InstructionType GetType();
-    bool CheckORG(int& a_loc);
 
 };
 

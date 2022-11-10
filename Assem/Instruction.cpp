@@ -18,10 +18,10 @@ Instruction::InstructionType Instruction::ParseInstruction(string a_line)
     if (!empty)    // too many arguements, just skip the line and report error in PassII()
         return ST_Comment;
 
-    // find the instruction type
-    m_type = GetType();
-
-    return m_type;
+    
+    
+    // return the instruction type
+    return GetType();
 }
 
 void Instruction::RemoveComment(string& a_line)
@@ -141,10 +141,4 @@ Instruction::InstructionType Instruction::GetType()
     // some type of error, will be dealt with in PassII()
     else
         return ST_Comment;
-}
-
-bool Instruction::CheckORG(int& a_loc)
-{
-    string cmp_OpCode = MatchCase(m_OpCode);
-    return (cmp_OpCode == "ORG");
 }
