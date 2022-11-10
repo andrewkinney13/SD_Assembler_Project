@@ -59,9 +59,11 @@ private:
     int m_OperandValue;   // The value of the operand if it is numeric.
 
     // Private functions
-    void RemoveComment(string &a_line);
+    void RemoveComment(string& a_line);
     bool ParseLine(const string& a_line, string& a_label, string& a_opcode, string& a_operand);
     string MatchCase(const string& a_opcode);
+    InstructionType GetType();
+    bool CheckORG(int& a_loc);
 
 };
 

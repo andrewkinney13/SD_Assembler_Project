@@ -15,45 +15,13 @@ Instruction::InstructionType Instruction::ParseInstruction(string a_line)
     
     // parse the line
     bool empty = ParseLine(a_line, m_Label, m_OpCode, m_Operand);    
-
-    // create case insensitive copy of m_OpCode for comparison, all uppercase
-    string cmp_OpCode = MatchCase(m_OpCode);
-
-    // check if comment
-    if (!empty ||    // too many arguements, just skip the line and report error in PassII()
-        !m_Label.empty() && m_OpCode.empty() ||    // label but no opcode, also an error to be reported in PassII()
-        m_Label.empty() && m_OpCode.empty() && m_Operand.empty())     // line was blank / comment, no contents 
+    if (!empty)    // too many arguements, just skip the line and report error in PassII()
         return ST_Comment;
 
-    // check if contains assembly instructions
-    else if (cmp_OpCode == "DC" ||
-        cmp_OpCode == "DS" ||
-        cmp_OpCode == "ORG")
-        return  ST_AssemblerInstr;
+    // find the instruction type
+    m_type = GetType();
 
-    // check if contains symbolic machine language operation code
-    else if (cmp_OpCode == "ADD" ||
-        cmp_OpCode == "SUB" ||
-        cmp_OpCode == "MULT" ||
-        cmp_OpCode == "DIV" ||
-        cmp_OpCode == "LOAD" ||
-        cmp_OpCode == "STORE" ||
-        cmp_OpCode == "READ" ||
-        cmp_OpCode == "WRITE" ||
-        cmp_OpCode == "B" ||
-        cmp_OpCode == "BM" ||
-        cmp_OpCode == "BZ" ||
-        cmp_OpCode == "BP" ||
-        cmp_OpCode == "HALT")
-        return ST_MachineLanguage;
-
-    // check if operation code is end
-    else if (cmp_OpCode == "END")
-        return ST_End;
-
-    // some type of error, will be dealt with in PassII()
-    else
-        return ST_Comment;
+    return m_type;
 }
 
 void Instruction::RemoveComment(string& a_line)
@@ -118,5 +86,65 @@ string Instruction::MatchCase(const string& a_opcode)
     return newOpCode;
 }
 
+/*
+NAME
 
+    GetType - finds the type of instruction based on the contents of the instruction
 
+SYNOPSIS
+
+    InstructionType GetType ( );
+
+DESCRIPTION
+
+    This function returns the type of instruction for the current line being worked on,
+    returns comments if there's a suspected error within the line
+
+*/
+
+Instruction::InstructionType Instruction::GetType()
+{
+    // create case insensitive copy of m_OpCode for comparison, all uppercase
+    string cmp_OpCode = MatchCase(m_OpCode);
+
+    // check if comment
+    if (!m_Label.empty() && m_OpCode.empty() ||    // label but no opcode, also an error to be reported in PassII()
+        m_Label.empty() && m_OpCode.empty() && m_Operand.empty())     // line was blank / comment, no contents 
+        return ST_Comment;
+
+    // check if contains assembly instructions
+    else if (cmp_OpCode == "DC" ||
+        cmp_OpCode == "DS" ||
+        cmp_OpCode == "ORG")
+        return  ST_AssemblerInstr;
+
+    // check if contains symbolic machine language operation code
+    else if (cmp_OpCode == "ADD" ||
+        cmp_OpCode == "SUB" ||
+        cmp_OpCode == "MULT" ||
+        cmp_OpCode == "DIV" ||
+        cmp_OpCode == "LOAD" ||
+        cmp_OpCode == "STORE" ||
+        cmp_OpCode == "READ" ||
+        cmp_OpCode == "WRITE" ||
+        cmp_OpCode == "B" ||
+        cmp_OpCode == "BM" ||
+        cmp_OpCode == "BZ" ||
+        cmp_OpCode == "BP" ||
+        cmp_OpCode == "HALT")
+        return ST_MachineLanguage;
+
+    // check if operation code is end
+    else if (cmp_OpCode == "END")
+        return ST_End;
+
+    // some type of error, will be dealt with in PassII()
+    else
+        return ST_Comment;
+}
+
+bool Instruction::CheckORG(int& a_loc)
+{
+    string cmp_OpCode = MatchCase(m_OpCode);
+    return (cmp_OpCode == "ORG");
+}
