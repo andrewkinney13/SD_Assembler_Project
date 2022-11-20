@@ -34,9 +34,20 @@ public:
 
         return m_Label;
     };
+    
     // To determine if a label is blank.
     inline bool isLabel( ) {
         return !m_Label.empty();
+    };
+
+    // To check if current statement is ORG
+    bool CheckORG(int a_loc) {
+        return MatchCase(m_OpCode) == "ORG";
+    };
+
+    // Returns the operand of the current instruction
+    int GetOperand() {
+        return stoi(m_Operand);
     };
 
 
@@ -63,7 +74,6 @@ private:
     bool ParseLine(const string& a_line, string& a_label, string& a_opcode, string& a_operand);
     string MatchCase(const string& a_opcode);
     InstructionType GetType();
-
 };
 
 

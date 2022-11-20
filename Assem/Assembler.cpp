@@ -48,7 +48,11 @@ void Assembler::PassI( )
 	    }
 
         // If this statement contains ORG instruction, set the origin location
-        //if( m_inst.Instruction::CheckORG(loc) )
+        if (m_inst.Instruction::CheckORG( loc ))
+        {
+            loc = m_inst.Instruction::GetOperand();
+            continue;
+        }
 
         // If the instruction has a label, record it and its location in the
         // symbol table.
@@ -74,7 +78,7 @@ void Assembler::PassII()
 // Displays symbols in symbol table
 void Assembler::DisplaySymbolTable() 
 { 
-    // m_symtab.DisplaySymbolTable();
+    m_symtab.DisplaySymbolTable();
 }
 
 void Assembler::RunProgramInEmulator()

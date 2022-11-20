@@ -47,6 +47,7 @@ bool Instruction::ParseLine(const string& a_line, string& a_label, string& a_opc
     if (a_line[0] != ' ' && a_line[0] != '\t')    // label is always first column
         ins >> a_label;
     
+    // fill in data members
     string temp;
     ins >> a_opcode >> a_operand >> temp;
     
@@ -56,7 +57,13 @@ bool Instruction::ParseLine(const string& a_line, string& a_label, string& a_opc
 // Compute the location of the next instruction.
 int Instruction::LocationNextInstruction(int a_loc) 
 { 
-	return 100; 
+    // if defining storage, skip that much memory 
+    if (MatchCase(m_OpCode) == "DS")
+    {
+        return a_loc + stoi(m_Operand);
+    }
+   
+	return a_loc + 1; 
 }
 
 /*
@@ -72,7 +79,8 @@ SYNOPSIS
 DESCRIPTION
 
     This function returns a copy of opcode strings to make comparisions 
-    without altering the original user code
+    without altering the original user code, the returned string is in 
+    all upper case letters
 */
 
 string Instruction::MatchCase(const string& a_opcode)
@@ -99,7 +107,6 @@ DESCRIPTION
 
     This function returns the type of instruction for the current line being worked on,
     returns comments if there's a suspected error within the line
-
 */
 
 Instruction::InstructionType Instruction::GetType()
@@ -142,3 +149,5 @@ Instruction::InstructionType Instruction::GetType()
     else
         return ST_Comment;
 }
+
+
