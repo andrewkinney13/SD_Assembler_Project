@@ -20,6 +20,7 @@ DESCRIPTION
     This function will place the symbol "a_symbol" and its location "a_loc"
     in the symbol table.
 */
+
 void SymbolTable::AddSymbol( const string &a_symbol, int a_loc )
 {
     // If the symbol is already in the symbol table, record it as multiply defined.
@@ -33,7 +34,49 @@ void SymbolTable::AddSymbol( const string &a_symbol, int a_loc )
     m_symbolTable[a_symbol] = a_loc;
 }
 
+/*
+NAME
+
+    DisplaySymbolTable - displays the symbol table.
+
+SYNOPSIS
+
+    void DisplaySymbolTable (  );
+
+DESCRIPTION
+
+    This function will print every label stored in the symbol table, in alphabetical 
+    order.
+*/
+
 void SymbolTable::DisplaySymbolTable()
 {
+    // print header
+    cout << "Symbol Table: " << endl << endl
+        << "Symbol#\tSymbol\tLocation\t" << endl;
     
+    // accumulator value
+    int count = 0;
+
+    // loop through map and print symbol with location
+    for (auto& a : m_symbolTable)
+    {
+        cout << count << "\t" << a.first << "\t" << a.second << endl;
+        count++;
+    }
+}
+
+// Lookup a symbol in the symbol table.
+bool SymbolTable::LookupSymbol(const string& a_symbol, int& a_loc)
+{
+    for (auto& a : m_symbolTable)
+    {
+        if (a_symbol == a.first)
+        {
+            a_loc = a.second;
+            return true;
+        }
+    }
+
+    return false;
 }

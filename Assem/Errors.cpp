@@ -9,7 +9,7 @@ vector<string> Errors::m_ErrorMsgs;
 // Initializes error reports.
 void Errors::InitErrorReporting()
 {
-
+	m_ErrorMsgs.clear();
 }
 
 // Records an error message.

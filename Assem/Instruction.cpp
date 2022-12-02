@@ -5,7 +5,23 @@
 #include "Instruction.h"
 #include <cstring>
 
-// Parse the Instruction. THIS IS WHERE WE START
+/*
+NAME
+
+    ParseInstruction - returns instruction type based on contents of line.
+
+SYNOPSIS
+
+    InstructionType ParseInstruction( string& a_line );
+        a_line      ->  line that this function will determine the type of
+
+DESCRIPTION
+
+    This function creates an instruction out of the passed in line, removes comments from it,
+    determines if it has too many instructions, initalizes the label, opcode, and operand 
+    data members, and based on that info returns the type of instruction that line was. 
+*/
+
 Instruction::InstructionType Instruction::ParseInstruction(string a_line)
 { 
     m_instruction = a_line;
@@ -24,6 +40,22 @@ Instruction::InstructionType Instruction::ParseInstruction(string a_line)
     return GetType();
 }
 
+/*
+NAME
+
+    RemoveComment - removes anything after a semicolon on a line
+
+SYNOPSIS
+
+    void RemoveComment( string& a_line );
+        a_line      ->  line whose comments are being removed
+
+DESCRIPTION
+
+    This function removes any text after encountering the char ';',
+    which represents a comment in programs.
+*/
+
 void Instruction::RemoveComment(string& a_line)
 {
     size_t pos = a_line.find(';');
@@ -33,6 +65,27 @@ void Instruction::RemoveComment(string& a_line)
 
     a_line.erase(pos);
 }
+
+/*
+NAME
+
+    ParseLine - obtains data member values for current instruction, returns 
+                false if too many instructions in line
+
+SYNOPSIS
+
+    bool ParseLine( const string& a_line, string& a_label, string& a_opcode, string& a_operand );
+        a_line      ->  full line from program
+        a_label     ->  label to be initalized
+        a_opcode    ->  opcode to be initalized
+        a_operand   ->  operand to be initalized
+
+DESCRIPTION
+
+    This function will return false if there are too many instructions on a given line.
+    If there are a proper amouin,t. it will fill in the values for the passed by reference data 
+    members depending on their location on the line.
+*/
 
 bool Instruction::ParseLine(const string& a_line, string& a_label, string& a_opcode, string& a_operand)
 {
@@ -53,6 +106,23 @@ bool Instruction::ParseLine(const string& a_line, string& a_label, string& a_opc
     
     return temp == "";     // returns false if not empty
 }
+
+/*
+NAME
+
+    LocationNextInstruction - creates the location of the next instruction
+
+SYNOPSIS
+
+    int LocationNextInstruction( int a_loc);
+        a_loc	-> previous location
+
+DESCRIPTION
+
+    This function, using the passed in previous location, will calculate the next
+    location for the next instructin. Usually a_loc + 1, but sometimes
+    more, if the current OpCode defines storage. 
+*/
 
 // Compute the location of the next instruction.
 int Instruction::LocationNextInstruction(int a_loc) 
@@ -106,7 +176,7 @@ SYNOPSIS
 DESCRIPTION
 
     This function returns the type of instruction for the current line being worked on,
-    returns comments if there's a suspected error within the line
+    returns comments if there's a suspected error within the line.
 */
 
 Instruction::InstructionType Instruction::GetType()
@@ -148,6 +218,43 @@ Instruction::InstructionType Instruction::GetType()
     // some type of error, will be dealt with in PassII()
     else
         return ST_Comment;
+}
+
+int Instruction::GetNumericOpCode()
+{
+    // create comparison OpCode
+    string cmp_OpCode = MatchCase(m_OpCode);
+
+    // assign opCodeNum
+    if (cmp_OpCode == "ADD")
+        return 1;
+    else if (cmp_OpCode == "SUBTRACT")
+        return 2;
+    else if (cmp_OpCode == "MULTIPLY")
+        return 3;
+    else if (cmp_OpCode == "DIVIDE")
+        return 4;
+    else if (cmp_OpCode == "LOAD")
+        return 5;
+    else if (cmp_OpCode == "STORE")
+        return 6;
+    else if (cmp_OpCode == "READ")
+        return 7;
+    else if (cmp_OpCode == "WRITE")
+        return 8;
+    else if (cmp_OpCode == "BRANCH")
+        return 9;
+    else if (cmp_OpCode == "BM")
+        return 10;
+    else if (cmp_OpCode == "BZ")
+        return 11;
+    else if (cmp_OpCode == "BP")
+        return 12;
+    else if (cmp_OpCode == "HALT")
+        return 13;
+   
+    // error
+    return -1;
 }
 
 

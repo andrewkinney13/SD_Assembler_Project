@@ -8,7 +8,7 @@
 // Records instructions and data into simulated memory.
 bool Emulator::insertMemory(int a_location, int a_contents)
 {
-	//m_memory[a_location] = a_contents
+	m_memory[a_location] = a_contents;
 
 	return true;
 }

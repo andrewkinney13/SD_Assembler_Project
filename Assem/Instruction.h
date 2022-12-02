@@ -10,9 +10,9 @@ class Instruction {
 
 public:
 
-    Instruction( ) { };
+    Instruction() { };
 
-    ~Instruction( ){ };
+    ~Instruction() { };
 
     // Codes to indicate the type of instruction we are processing.  Why is this inside the
     // class?  We should make this an enum class.  We will do this during a lecture.
@@ -30,26 +30,47 @@ public:
     int LocationNextInstruction(int a_loc);
 
     // To access the label
-    inline string &GetLabel( ) {
-
+    inline string& GetLabel() {
         return m_Label;
     };
-    
+
     // To determine if a label is blank.
-    inline bool isLabel( ) {
+    inline bool isLabel() {
         return !m_Label.empty();
     };
 
     // To check if current statement is ORG
-    bool CheckORG(int a_loc) {
+    inline bool CheckORG(int a_loc) {
         return MatchCase(m_OpCode) == "ORG";
     };
 
-    // Returns the operand of the current instruction
-    int GetOperand() {
+    inline bool CheckEND()
+    {
+        return MatchCase(m_OpCode) == "END";
+    };
+
+    // Returns the operand of the current instruction as a number
+    inline int GetNumOperand() {
         return stoi(m_Operand);
     };
 
+    // Returns the operand of the current instruction as a string
+    inline string GetStringOperand()
+    {
+        return m_Operand;
+    };
+
+    // Returns the opcdoe of the current instruction
+    inline string GetOpCode()
+    {
+        return m_OpCode;
+    }
+
+    // Makes a copy of OpCode in all upper-case for comparisons
+    string MatchCase(const string& a_opcode);
+
+    // Returns numeric OpCodeValue
+    int GetNumericOpCode();
 
 private:
 
@@ -72,8 +93,8 @@ private:
     // Private functions
     void RemoveComment(string& a_line);
     bool ParseLine(const string& a_line, string& a_label, string& a_opcode, string& a_operand);
-    string MatchCase(const string& a_opcode);
     InstructionType GetType();
+
 };
 
 

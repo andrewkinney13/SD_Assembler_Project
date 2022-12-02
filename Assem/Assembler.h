@@ -28,6 +28,12 @@ public:
     // Run emulator on the translation.
     void RunProgramInEmulator();
 
+    // Translates assembly language instruction
+    void TranslateAssemInstruction(int &a_loc);
+
+    // Translates machine language instructions
+    void TranslateMachineInstruction(const int a_loc);
+
 private:
 
     FileAccess m_facc;	    // File Access object

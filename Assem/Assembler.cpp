@@ -50,7 +50,7 @@ void Assembler::PassI( )
         // If this statement contains ORG instruction, set the origin location
         if (m_inst.Instruction::CheckORG( loc ))
         {
-            loc = m_inst.Instruction::GetOperand();
+            loc = m_inst.Instruction::GetNumOperand();
             continue;
         }
 
@@ -67,18 +67,140 @@ void Assembler::PassI( )
 // This will translate the code... oh boy!
 void Assembler::PassII()
 {
-    /*if (!empty)
-        Errors::RecordError("Too many arguements")
+    // header
+    cout << "Translation of Program: " << endl << endl;
+    cout << "Location\tContents\tOriginal Statement" << endl;
 
+    // go to beginning of file
+    m_facc.rewind();
 
-        if (!m_Label.empty() && m_OpCode.empty())
-            Errors::RecordError("Quack");*/
+    int loc = 0;
+
+    // initalizate error reporting
+    Errors::InitErrorReporting();
+
+    // loop through the program 
+    for (; ;)
+    {
+        // Read the next line from the source file.
+        string line;
+
+        if (!m_facc.GetNextLine(line)) {
+            // If there are no more lines, we are missing an end statement.
+            Errors::RecordError("Assembly instruction END not found");
+        }
+
+        Instruction::InstructionType st = m_inst.ParseInstruction(line);
+
+        if (st == Instruction::ST_Comment)
+        {
+            cout << "\t\t\t\t" << line << endl;
+            continue;  // do not advance in memory if statement was just a comment!
+        }
+
+        else if (st == Instruction::ST_AssemblerInstr)
+            TranslateAssemInstruction(loc);
+            
+        else if (st == Instruction::ST_MachineLanguage)
+        {
+            TranslateMachineInstruction(loc);
+
+            // Set location
+            loc += 1;
+        }
+            
+        // Check if end
+        if (m_inst.CheckEND())
+        {
+            cout << "\t\t\t\t" << line;
+            break;
+        }
+
+        // Print the original statement
+        cout << line << endl;
+        
+    }
+
+    return;
 }
 
 // Displays symbols in symbol table
 void Assembler::DisplaySymbolTable() 
 { 
     m_symtab.DisplaySymbolTable();
+    return;
+}
+
+void Assembler::TranslateAssemInstruction(int &a_loc)
+{
+    // get the OpCode
+    string cmpOpCode = m_inst.MatchCase(m_inst.GetOpCode());
+
+    // print current location
+    cout << a_loc << "\t\t";
+
+    // if org, set location accordingly 
+    if (m_inst.CheckORG(a_loc))
+    {
+        cout << "\t\t";
+        a_loc = m_inst.Instruction::GetNumOperand();
+        return;
+    }
+
+    // assign contents and fill in memory
+    int contents;
+    if (cmpOpCode == "DC")
+    {
+        contents = m_inst.GetNumOperand();
+        cout << contents << "\t\t";
+        m_emul.insertMemory(a_loc, contents);
+    }
+        
+
+    else if (cmpOpCode == "DS")
+    {
+        a_loc += m_inst.GetNumOperand();
+        cout << "\t\t";
+        return;
+    }
+
+    // Set location
+    a_loc += 1;
+
+    return;
+}
+
+void Assembler::TranslateMachineInstruction(const int a_loc)
+{
+    // show location of statement
+    cout << a_loc << "\t\t";
+
+    int numOpCode = m_inst.GetNumericOpCode(),
+        symbolLocation = 0;
+
+    if (numOpCode == -1)
+    {
+        Errors::RecordError("Invalid Machine Language OpCode");
+        return;
+    }
+
+    // find symbol's address
+    if (!m_symtab.LookupSymbol(m_inst.GetStringOperand(), symbolLocation) && numOpCode != 13)
+    {
+        Errors::RecordError("Attempting to access symbol which has not been defined");
+        return;
+    }
+
+    // halt statement, no symbol but not an error
+    else if (numOpCode == 13)  
+        symbolLocation = 0;
+
+    // assign contents, print, and store in memory
+    int contents = numOpCode * 10'000 + symbolLocation;
+    cout << contents << "\t\t";
+    m_emul.insertMemory(a_loc, contents);
+
+    return;
 }
 
 void Assembler::RunProgramInEmulator()
