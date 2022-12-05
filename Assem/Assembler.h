@@ -13,6 +13,7 @@
 class Assembler {
 
 public:
+    // Constructor and Destructor
     Assembler( int argc, char *argv[] );
     ~Assembler( );
 

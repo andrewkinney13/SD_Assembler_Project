@@ -7,6 +7,21 @@
 /*
 NAME
 
+    Symbol Table class
+
+SYNOPSIS
+    Constructor is empty, nothing passed in
+
+DESCRIPTION
+
+    This class keeps track of all the gathered symbols in the program
+    being translated. Symbols are defined during PassI, and later used during PassII when 
+    recording their addresses. 
+*/
+
+/*
+NAME
+
     AddSymbol - adds a new symbol to the symbol table.
 
 SYNOPSIS
@@ -64,9 +79,27 @@ void SymbolTable::DisplaySymbolTable()
         cout << count << "\t" << a.first << "\t" << a.second << endl;
         count++;
     }
+    return;
 }
 
-// Lookup a symbol in the symbol table.
+/*
+NAME
+
+    LookupSymbol - updates symbol and location that are passed in
+
+SYNOPSIS
+
+    bool LookupSymbol( const string& a_symbol, int& a_loc );
+         const string& a_symbol      -> symbol to be initalized 
+         int& a_loc                  -> location of symbol 
+
+DESCRIPTION
+
+    This function is passed a variable for the symbol and location, 
+    they are updated once found in the map of symbols and true is returned.
+    False is returned if the symbol is not found.
+*/
+
 bool SymbolTable::LookupSymbol(const string& a_symbol, int& a_loc)
 {
     for (auto& a : m_symbolTable)
@@ -77,6 +110,5 @@ bool SymbolTable::LookupSymbol(const string& a_symbol, int& a_loc)
             return true;
         }
     }
-
     return false;
 }

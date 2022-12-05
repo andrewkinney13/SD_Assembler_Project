@@ -3,8 +3,6 @@
 //
 #pragma once
 
-
-
 // This class is our symbol table.
 class SymbolTable {
 

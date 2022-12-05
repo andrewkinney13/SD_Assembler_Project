@@ -8,6 +8,22 @@
 /*
 NAME
 
+    Instruction Class
+
+SYNOPSIS
+    Constructor is empty, nothing passed in
+
+DESCRIPTION
+
+    The instruction class contains functions which pertain to instructions, and the line by line
+    collection of their elements. The assembler class uses this class often, to help find the 
+    next location of an instruction, to remove comments, to fill in data members of a current 
+    instruction object and many more fun tools!
+*/
+
+/*
+NAME
+
     ParseInstruction - returns instruction type based on contents of line.
 
 SYNOPSIS
@@ -33,8 +49,6 @@ Instruction::InstructionType Instruction::ParseInstruction(string a_line)
     bool empty = ParseLine(a_line, m_Label, m_OpCode, m_Operand);    
     if (!empty)    // too many arguements, just skip the line and report error in PassII()
         return ST_Comment;
-
-    
     
     // return the instruction type
     return GetType();
@@ -220,6 +234,21 @@ Instruction::InstructionType Instruction::GetType()
         return ST_Comment;
 }
 
+/*
+NAME
+
+    GetNumericOpCode - gets the numeric operation code for a machine instruction
+
+SYNOPSIS
+
+    int GetNumericOpCode ( );
+
+DESCRIPTION
+
+    Returns an integer representation of the operation code, used for the translation of the 
+    of machine language instructions.
+*/
+
 int Instruction::GetNumericOpCode()
 {
     // create comparison OpCode
@@ -252,9 +281,6 @@ int Instruction::GetNumericOpCode()
         return 12;
     else if (cmp_OpCode == "HALT")
         return 13;
-   
-    // error
-    return -1;
 }
 
 

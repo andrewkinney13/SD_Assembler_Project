@@ -14,9 +14,7 @@ public:
 
     ~Instruction() { };
 
-    // Codes to indicate the type of instruction we are processing.  Why is this inside the
-    // class?  We should make this an enum class.  We will do this during a lecture.
-    // Whenever callling this, use In
+    // Used to assign a given instruction a type
     enum InstructionType {
         ST_MachineLanguage, 	// A machine language instruction.
         ST_AssemblerInstr,      // Assembler Language instruction.
@@ -44,6 +42,7 @@ public:
         return MatchCase(m_OpCode) == "ORG";
     };
 
+    // To check if the current instruction is END
     inline bool CheckEND()
     {
         return MatchCase(m_OpCode) == "END";
@@ -74,27 +73,23 @@ public:
 
 private:
 
-
     // The elemements of a instruction
-    string m_Label;        // The label.
-    string m_OpCode;       // The symbolic op code.
-    string m_Operand;     // The first operand. 
-
-
+    string m_Label;          // The label.
+    string m_OpCode;         // The symbolic op code.
+    string m_Operand;        // The first operand. 
     string m_instruction;    // The original instruction.
 
     // Derived values.
-    int m_NumOpCode;     // The numerical value of the op code for machine language equivalents.
-    InstructionType m_type; // The type of instruction.
+    int m_NumOpCode;         // The numerical value of the op code for machine language equivalents.
+    InstructionType m_type;  // The type of instruction.
 
-    bool m_IsNumericOperand;// == true if the operand is numeric.
-    int m_OperandValue;   // The value of the operand if it is numeric.
+    bool m_IsNumericOperand; // == true if the operand is numeric.
+    int m_OperandValue;      // The value of the operand if it is numeric.
 
     // Private functions
     void RemoveComment(string& a_line);
     bool ParseLine(const string& a_line, string& a_label, string& a_opcode, string& a_operand);
     InstructionType GetType();
-
 };
 
 
