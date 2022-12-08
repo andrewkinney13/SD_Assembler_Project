@@ -81,6 +81,4 @@ void Errors::DisplayErrors()
     // Display all errors through a loop
     for (string msg : m_ErrorMsgs)
         cout << msg << endl;
-
-    cout << "Not going to emulate...";
 }

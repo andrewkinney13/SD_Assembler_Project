@@ -141,6 +141,10 @@ void Assembler::PassII()
         // Aquire instructin type
         Instruction::InstructionType st = m_inst.ParseInstruction(line);
 
+        // Check for errors 
+        if (!m_inst.GetLabel().empty() && m_inst.GetOpCode().empty())
+            Errors::RecordError("Undefined Label");
+
         // Print if just a comment line
         if (st == Instruction::ST_Comment)
         {
@@ -272,6 +276,10 @@ void Assembler::TranslateMachineInstruction(const int a_loc)
     // Show location of statement
     cout << a_loc << "\t\t";
 
+    if (m_inst.GetStringOperand().empty())
+        Errors::RecordError("Missing Operand");
+        
+
     // Get numeric OpCode
     int numOpCode = m_inst.GetNumericOpCode(),
         symbolLocation = 0;
@@ -326,19 +334,14 @@ void Assembler::RunProgramInEmulator()
 {
     // Check for errors
     if (Errors::ErrorsExist())
-    {
         Errors::DisplayErrors();
-    }
     
     // Print header
-    else
-    {
-        cout << "Results from emulating program:" << endl << endl;
+    cout << "Results from emulating program:" << endl << endl;
 
-        m_emul.runProgram();
+    m_emul.runProgram();
         
-        cout << endl << "End of emulation" << endl;
-    }
+    cout << endl << "End of emulation" << endl;
     
     return;
 }
