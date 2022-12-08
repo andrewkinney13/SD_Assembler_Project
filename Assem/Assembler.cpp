@@ -227,7 +227,12 @@ void Assembler::TranslateAssemInstruction(int &a_loc)
         cout << setfill('0') << setw(7) << contents << "\t\t";
         
         // When storing in memory, if unsuccessful record an error 
-        if (!m_emul.insertMemory(a_loc, contents))
+        if (contents > Emulator::MEMSZ)
+        { 
+            Errors::RecordError("Constant size too large for computer");
+        }
+
+        else if (!m_emul.insertMemory(a_loc, contents))
             Errors::RecordError("Overwriting memory!");
     }
         
