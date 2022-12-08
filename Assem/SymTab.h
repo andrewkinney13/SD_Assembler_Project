@@ -12,7 +12,7 @@ public:
     SymbolTable( ) {};
     ~SymbolTable( ) {};
     
-    const int multiplyDefinedSymbol = -999;
+    static const int multiplyDefinedSymbol = -999;
 
     // Add a new symbol to the symbol table.
     void AddSymbol( const string &a_symbol, int a_loc );

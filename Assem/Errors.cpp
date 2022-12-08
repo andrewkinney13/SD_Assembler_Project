@@ -75,6 +75,12 @@ DESCRIPTION
 
 void Errors::DisplayErrors()
 {
+    // Header
+    cout << "Errors were found in your program!" << endl;
+
+    // Display all errors through a loop
     for (string msg : m_ErrorMsgs)
         cout << msg << endl;
+
+    cout << "Not going to emulate...";
 }

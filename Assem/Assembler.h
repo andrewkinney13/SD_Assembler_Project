@@ -35,6 +35,9 @@ public:
     // Translates machine language instructions
     void TranslateMachineInstruction(const int a_loc);
 
+    // 
+    void InputContents(const int a_contents, const int a_location);
+
 private:
 
     FileAccess m_facc;	    // File Access object

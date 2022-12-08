@@ -225,7 +225,10 @@ void Assembler::TranslateAssemInstruction(int &a_loc)
         // Assign contents, print, and store in memory
         contents = m_inst.GetNumOperand();
         cout << setfill('0') << setw(7) << contents << "\t\t";
-        m_emul.insertMemory(a_loc, contents);
+        
+        // When storing in memory, if unsuccessful record an error 
+        if (!m_emul.insertMemory(a_loc, contents))
+            Errors::RecordError("Overwriting memory!");
     }
         
     else if (cmpOpCode == "DS")    // Define storage, skips defined number of lines in assembler memory
@@ -275,6 +278,12 @@ void Assembler::TranslateMachineInstruction(const int a_loc)
         return;
     }
 
+    else if (symbolLocation == SymbolTable::multiplyDefinedSymbol)
+    {
+        Errors::RecordError("Accessing a multiply defined symbol");
+        return;
+    }
+
     // Halt statement, no symbol but not an error
     else if (numOpCode == 13)  
         symbolLocation = 0;
@@ -282,7 +291,13 @@ void Assembler::TranslateMachineInstruction(const int a_loc)
     // Assign contents, print, and store in memory
     int contents = numOpCode * 10'000 + symbolLocation;
     cout << setfill('0') << setw(7) << contents << "\t\t";
-    m_emul.insertMemory(a_loc, contents);
+    
+    // When storing in memory, if unsuccessful record an error 
+    if (a_loc > Emulator::MEMSZ)
+        Errors::RecordError("Out of memory / assigning out of memory bounds"); 
+
+    else if (!m_emul.insertMemory(a_loc, contents))
+        Errors::RecordError("Overwriting memory!");
 
     return;
 }
@@ -290,7 +305,7 @@ void Assembler::TranslateMachineInstruction(const int a_loc)
 /*
 NAME
 
-    RunProgramInEmulator - calls Emulator class function to run the emulator 
+    RunProgramInEmulator - calls Emulator class function to run the emulator, unless there are errors
 
 SYNOPSIS
 
@@ -299,16 +314,27 @@ SYNOPSIS
 DESCRIPTION
 
     This function calls the run proram funcion of the emulator class, by running 
-    that function on the m_emul object
+    that function on the m_emul object. Before running, checks for errors
 */
 
 void Assembler::RunProgramInEmulator()
 {
+    // Check for errors
+    if (Errors::ErrorsExist())
+    {
+        Errors::DisplayErrors();
+    }
+    
     // Print header
-    cout << "Results from emulating program:" << endl << endl;
+    else
+    {
+        cout << "Results from emulating program:" << endl << endl;
 
-    m_emul.runProgram();
-    cout << endl << "End of emulation" << endl;
+        m_emul.runProgram();
+        
+        cout << endl << "End of emulation" << endl;
+    }
+    
     return;
 }
 

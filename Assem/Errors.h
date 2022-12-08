@@ -21,6 +21,12 @@ public:
     // Displays the collected error message.
     static void DisplayErrors( );
 
+    // Tells if errors exist or not
+    static bool ErrorsExist()
+    {
+        return m_ErrorMsgs.empty();
+    }
+
 private:
 
     static vector<string> m_ErrorMsgs;  // This must be declared in the .cpp file.  Why?

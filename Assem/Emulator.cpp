@@ -34,13 +34,20 @@ DESCRIPTION
 
 	This function stores contents (machine language numerical codes) into an array
 	m_memory, which will be used later for the full emulation of the program.
+	If memory already exists at the location passed in, it will not be written.
 */
 
 bool Emulator::insertMemory(int a_location, int a_contents)
 {
-	m_memory[a_location] = a_contents;
-
-	return true;
+	// Empty memory, can write
+	if (m_memory[a_location] == 0)
+	{
+		m_memory[a_location] = a_contents;
+		return true;
+	}
+	
+	// Overwriting data, can't do it!
+	return false;
 }
 
 /*
