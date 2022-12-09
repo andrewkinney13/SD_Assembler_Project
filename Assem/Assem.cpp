@@ -1,5 +1,9 @@
 /*
  * Assembler main program.
+ * 
+ * Andrew Kinney
+ * 12/8/22
+ * 
  */
 #include "stdafx.h"     // This must be present if you use precompiled headers which you will use. 
 #include <stdio.h>
