@@ -165,12 +165,8 @@ void Assembler::PassII()
             loc += 1;
         }
 
-        // If not a comment, assembler instruction, or machine instruction, error!
-        else
-            Errors::RecordError("Invalid instruction");
-
         // Check if end
-        if (m_inst.CheckEND())
+        else if (st == Instruction::ST_End)
         {
             cout << "\t\t\t\t" << line << endl << endl;
             
@@ -180,6 +176,10 @@ void Assembler::PassII()
 
             break;
         }
+        
+        // If not a comment, assembler instruction, or machine instruction, or end, error!
+        else
+            Errors::RecordError("Invalid instruction");
 
         // Print the original statement
         cout << line << endl;
@@ -219,6 +219,13 @@ void Assembler::TranslateAssemInstruction(int &a_loc)
     {
         cout << "\t\t";
         a_loc = m_inst.Instruction::GetNumOperand();
+        return;
+    }
+
+    // Check for operand
+    if (m_inst.GetStringOperand().empty())
+    {
+        Errors::RecordError("Missing Operand");
         return;
     }
 
@@ -276,13 +283,12 @@ void Assembler::TranslateMachineInstruction(const int a_loc)
     // Show location of statement
     cout << a_loc << "\t\t";
 
-    if (m_inst.GetStringOperand().empty())
-        Errors::RecordError("Missing Operand");
-        
-
     // Get numeric OpCode
     int numOpCode = m_inst.GetNumericOpCode(),
         symbolLocation = 0;
+
+    if (m_inst.GetStringOperand().empty() && numOpCode != 13)
+        Errors::RecordError("Missing Operand");
 
     // Find symbol's address, record error if it does not exist and this isn't halt statement
     if (!m_symtab.LookupSymbol(m_inst.GetStringOperand(), symbolLocation) && numOpCode != 13)
@@ -337,11 +343,14 @@ void Assembler::RunProgramInEmulator()
         Errors::DisplayErrors();
     
     // Print header
-    cout << "Results from emulating program:" << endl << endl;
+    else 
+    {
+        cout << "Results from emulating program:" << endl << endl;
 
-    m_emul.runProgram();
-        
-    cout << endl << "End of emulation" << endl;
+        m_emul.runProgram();
+
+        cout << endl << "End of emulation" << endl;
+    }
     
     return;
 }

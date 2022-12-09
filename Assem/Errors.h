@@ -24,7 +24,7 @@ public:
     // Tells if errors exist or not
     static bool ErrorsExist()
     {
-        return m_ErrorMsgs.empty();
+        return !m_ErrorMsgs.empty();
     }
 
 private:

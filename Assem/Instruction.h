@@ -40,13 +40,7 @@ public:
     // To check if current statement is ORG
     inline bool CheckORG(int a_loc) {
         return MatchCase(m_OpCode) == "ORG";
-    };
-
-    // To check if the current instruction is END
-    inline bool CheckEND()
-    {
-        return MatchCase(m_OpCode) == "END";
-    };
+    }
 
     // Returns the operand of the current instruction as a number
     inline int GetNumOperand() {

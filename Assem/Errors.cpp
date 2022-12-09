@@ -76,7 +76,7 @@ DESCRIPTION
 void Errors::DisplayErrors()
 {
     // Header
-    cout << "Errors were found in your program!" << endl;
+    cout << endl<< "Errors were found in your program!" << endl;
 
     // Display all errors through a loop
     for (string msg : m_ErrorMsgs)
