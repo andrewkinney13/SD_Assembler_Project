@@ -154,12 +154,18 @@ void Assembler::PassII()
 
         // Translate assembler instruction
         else if (st == Instruction::ST_AssemblerInstr)
-            TranslateAssemInstruction(loc);
-
+        {
+            if (!TranslateAssemInstruction(loc))
+            {
+                cout << "???\t" << endl;
+            }
+        }
+           
         // Translate machine language instruction
         else if (st == Instruction::ST_MachineLanguage)
         {
-            TranslateMachineInstruction(loc);
+            if(!TranslateMachineInstruction(loc))  
+                cout << "???\t\t";      // error translating
 
             // Set location
             loc += 1;
@@ -194,7 +200,7 @@ NAME
 
 SYNOPSIS
 
-    TranslateAssemInstruction ( int &a_loc )
+    bool TranslateAssemInstruction ( int &a_loc )
         &a_loc	-> previous location, passed by reference
 
 DESCRIPTION
@@ -203,10 +209,10 @@ DESCRIPTION
     due to this being an assembly instruction, an ORG or DS instruction can change the current location,
     so a_loc is passed by referenced and is updated by this function (if not an ORG or DS instruction,
     the function simply iterates through a_loc). This function also prints the translated code and
-    current location.
+    current location. Returns false if an error occured translating.
 */
 
-void Assembler::TranslateAssemInstruction(int &a_loc)
+bool Assembler::TranslateAssemInstruction(int &a_loc)
 {
     // Get the OpCode
     string cmpOpCode = m_inst.MatchCase(m_inst.GetOpCode());
@@ -219,14 +225,14 @@ void Assembler::TranslateAssemInstruction(int &a_loc)
     {
         cout << "\t\t";
         a_loc = m_inst.Instruction::GetNumOperand();
-        return;
+        return true;
     }
 
     // Check for operand
     if (m_inst.GetStringOperand().empty())
     {
         Errors::RecordError("Missing Operand");
-        return;
+        return false;
     }
 
     // Assign contents and fill in memory
@@ -241,23 +247,28 @@ void Assembler::TranslateAssemInstruction(int &a_loc)
         if (contents > Emulator::MEMSZ)
         { 
             Errors::RecordError("Constant size too large for computer");
+            return false;
         }
 
         else if (!m_emul.insertMemory(a_loc, contents))
+        {
             Errors::RecordError("Overwriting memory!");
+            return false;
+        }
+            
     }
         
     else if (cmpOpCode == "DS")    // Define storage, skips defined number of lines in assembler memory
     {
         a_loc += m_inst.GetNumOperand();
         cout << "\t\t";
-        return;
+        return true;
     }
 
     // Update location
     a_loc += 1;
 
-    return;
+    return true;
 }
 
 /*
@@ -267,7 +278,7 @@ NAME
 
 SYNOPSIS
 
-    TranslateMachineInstruction ( int a_loc )
+    bool TranslateMachineInstruction ( int a_loc )
         a_loc	-> previous location
 
 DESCRIPTION
@@ -275,10 +286,10 @@ DESCRIPTION
     This function translates a machine language instruction into machine language,
     due to this being a machine instruction, the location is passed as a copy and not updated here,
     but in the PassII function. This function also prints the translated code and
-    current location.
+    current location. Returns false if an error occured translating.
 */
 
-void Assembler::TranslateMachineInstruction(const int a_loc)
+bool Assembler::TranslateMachineInstruction(const int a_loc)
 {
     // Show location of statement
     cout << a_loc << "\t\t";
@@ -294,13 +305,13 @@ void Assembler::TranslateMachineInstruction(const int a_loc)
     if (!m_symtab.LookupSymbol(m_inst.GetStringOperand(), symbolLocation) && numOpCode != 13)
     {
         Errors::RecordError("Attempting to access symbol which has not been defined");
-        return;
+        return false;
     }
 
     else if (symbolLocation == SymbolTable::multiplyDefinedSymbol)
     {
         Errors::RecordError("Accessing a multiply defined symbol");
-        return;
+        return false;
     }
 
     // Halt statement, no symbol but not an error
@@ -313,12 +324,19 @@ void Assembler::TranslateMachineInstruction(const int a_loc)
     
     // When storing in memory, if unsuccessful record an error 
     if (a_loc > Emulator::MEMSZ)
-        Errors::RecordError("Out of memory / assigning out of memory bounds"); 
+    {
+        Errors::RecordError("Out of memory / assigning out of memory bounds");
+        return false;
+    }
 
     else if (!m_emul.insertMemory(a_loc, contents))
+    {
         Errors::RecordError("Overwriting memory!");
-
-    return;
+        return false;
+    }
+        
+    // Return true if successful translation
+    return true;
 }
 
 /*

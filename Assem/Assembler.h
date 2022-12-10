@@ -30,10 +30,10 @@ public:
     void RunProgramInEmulator();
 
     // Translates assembly language instruction
-    void TranslateAssemInstruction(int &a_loc);
+    bool  TranslateAssemInstruction(int &a_loc);
 
     // Translates machine language instructions
-    void TranslateMachineInstruction(const int a_loc);
+    bool TranslateMachineInstruction(const int a_loc);
 
     // 
     void InputContents(const int a_contents, const int a_location);
